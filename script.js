@@ -2,18 +2,29 @@ document.addEventListener('DOMContentLoaded', function() {
   // ========== ELEMENTOS FLUTUANTES MELHORADOS ==========
   const floatingContainer = document.getElementById('floating-elements');
   const elements = ['🐄', '💙', '🖤', '🤍', '✨', '🐮', '🌸', '💕'];
+  const pngElements = ['imagem1.png', 'imagem2.png'];
   
   // Cria elementos flutuantes
-  for (let i = 0; i < 20; i++) { // Reduzido de 30 para 20 elementos
-    const element = document.createElement('div');
-    element.className = 'floating';
-    element.textContent = elements[Math.floor(Math.random() * elements.length)];
+  for (let i = 0; i < 20; i++) {
+    const element = document.createElement(i % 2 === 0 ? 'div' : 'img');
+    
+    if (i % 2 === 0) {
+      // Emojis
+      element.className = 'floating';
+      element.textContent = elements[Math.floor(Math.random() * elements.length)];
+      element.style.fontSize = `${Math.random() * 1.5 + 1}em`;
+    } else {
+      // Imagens PNG
+      element.className = 'floating-img';
+      element.src = pngElements[Math.floor(Math.random() * pngElements.length)];
+      element.style.width = `${Math.random() * 60 + 40}px`;
+    }
+    
     element.style.left = `${Math.random() * 100}%`;
     element.style.top = `${Math.random() * 100}%`;
-    element.style.fontSize = `${Math.random() * 1.5 + 1}em`; // Tamanho reduzido
-    element.style.animationDuration = `${Math.random() * 40 + 30}s`; // Mais lento
+    element.style.animationDuration = `${Math.random() * 40 + 30}s`;
     element.style.animationDelay = `${Math.random() * 5}s`;
-    element.style.opacity = Math.random() * 0.5 + 0.3; // Opacidade reduzida
+    element.style.opacity = '0.8';
     floatingContainer.appendChild(element);
   }
 
@@ -25,36 +36,33 @@ document.addEventListener('DOMContentLoaded', function() {
     heart.className = 'heart';
     heart.innerHTML = '❤️';
     heart.style.left = `${Math.random() * 100}%`;
-    heart.style.fontSize = `${Math.random() * 1.2 + 0.8}em`; // Tamanho reduzido
-    heart.style.animationDuration = `${Math.random() * 5 + 4}s`; // Mais lento
+    heart.style.fontSize = `${Math.random() * 1.2 + 0.8}em`;
+    heart.style.animationDuration = `${Math.random() * 5 + 4}s`;
     heartsContainer.appendChild(heart);
     
-    // Remove o coração após a animação terminar
     setTimeout(() => {
       heart.remove();
-    }, 9000); // Aumentado para combinar com animação mais lenta
+    }, 9000);
   }
   
-  // Cria corações periodicamente (intervalo aumentado)
   setInterval(createHeart, 1000);
   
-  // Cria explosão de corações ao clicar (reduzida)
   function createHeartExplosion(x, y) {
-    for (let i = 0; i < 10; i++) { // Reduzido de 15 para 10 corações
+    for (let i = 0; i < 10; i++) {
       setTimeout(() => {
         const heart = document.createElement('div');
         heart.className = 'heart';
         heart.innerHTML = ['❤️', '💙', '💜', '🧡', '💛'][Math.floor(Math.random() * 5)];
         heart.style.left = `${x}px`;
         heart.style.top = `${y}px`;
-        heart.style.fontSize = `${Math.random() * 1.5 + 0.8}em`; // Tamanho reduzido
-        heart.style.animationDuration = `${Math.random() * 4 + 3}s`; // Mais lento
+        heart.style.fontSize = `${Math.random() * 1.5 + 0.8}em`;
+        heart.style.animationDuration = `${Math.random() * 4 + 3}s`;
         heartsContainer.appendChild(heart);
         
         setTimeout(() => {
           heart.remove();
-        }, 7000); // Aumentado para combinar com animação mais lenta
-      }, i * 150); // Intervalo aumentado
+        }, 7000);
+      }, i * 150);
     }
   }
 
@@ -66,8 +74,12 @@ document.addEventListener('DOMContentLoaded', function() {
   let currentSlide = 0;
   let isAnimating = false;
 
-  // Cria indicadores
-  slides.forEach((_, index) => {
+  // Esconde todos os slides exceto o primeiro
+  slides.forEach((slide, index) => {
+    if (index !== 0) {
+      slide.style.display = 'none';
+    }
+    
     const indicator = document.createElement('div');
     indicator.classList.add('indicator');
     if (index === 0) indicator.classList.add('active');
@@ -75,22 +87,18 @@ document.addEventListener('DOMContentLoaded', function() {
     indicatorsContainer.appendChild(indicator);
   });
 
-  // Atualiza posição dos slides
   function updateSlidePosition() {
     slides.forEach((slide, index) => {
+      slide.style.display = 'none';
       slide.classList.remove('prev', 'active', 'next');
       
       if (index === currentSlide) {
+        slide.style.display = 'flex';
         slide.classList.add('active');
-      } else if (index < currentSlide) {
-        slide.classList.add('prev');
-      } else {
-        slide.classList.add('next');
       }
     });
   }
 
-  // Navegação
   function goToSlide(n) {
     if (isAnimating) return;
     
@@ -100,14 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSlidePosition();
     updateIndicators();
     
-    // Cria explosão de corações ao mudar de slide (apenas quando avança)
     if (n > currentSlide) {
       createHeartExplosion(window.innerWidth / 2, window.innerHeight / 2);
     }
     
     setTimeout(() => {
       isAnimating = false;
-    }, 1000); // Aumentado para combinar com transição mais lenta
+    }, 800);
   }
 
   function updateIndicators() {
@@ -116,14 +123,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Inicialização
   updateSlidePosition();
 
-  // Event listeners
   prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
   nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
 
-  // Controle por touch/swipe
   let touchStartX = 0;
   let touchEndX = 0;
 
@@ -158,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         clearInterval(typing);
       }
-    }, 120); // Velocidade reduzida
+    }, 120);
   }
 
   // ========== CONTROLE DE ÁUDIO ==========
@@ -167,9 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const enableAudioBtn = document.getElementById('enable-audio');
   let audioEnabled = false;
 
-  // Tenta autoplay
   function tryAutoplay() {
-    audio.volume = 0.3; // Volume reduzido
+    audio.volume = 0.3;
     audio.play().then(() => {
       audioEnabled = true;
       audioControl.style.display = 'none';
@@ -179,10 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Ativa com botão manual
   if (enableAudioBtn) {
     enableAudioBtn.addEventListener('click', () => {
-      audio.volume = 0.3; // Volume reduzido
+      audio.volume = 0.3;
       audio.play().then(() => {
         audioEnabled = true;
         enableAudioBtn.innerHTML = '<i class="fas fa-volume-up"></i> Música Ativada!';
@@ -192,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
             audioControl.style.display = 'none';
           }, 300);
         }, 2000);
-        // Cria explosão de corações ao ativar áudio
         createHeartExplosion(
           audioControl.offsetLeft + audioControl.offsetWidth / 2,
           audioControl.offsetTop + audioControl.offsetHeight / 2
@@ -201,15 +202,12 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  // Tenta autoplay inicial
   tryAutoplay();
 
-  // Ativa com qualquer interação
   function enableAudioOnInteraction(e) {
     if (!audioEnabled) {
       tryAutoplay();
     }
-    // Cria explosão de corações ao clicar em qualquer lugar
     createHeartExplosion(e.clientX, e.clientY);
   }
 

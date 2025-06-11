@@ -7,7 +7,6 @@
   --heart: #ff6b6b;
 }
 
-/* Reset e configurações gerais */
 * {
   margin: 0;
   padding: 0;
@@ -24,10 +23,12 @@ body {
   touch-action: pan-y;
 }
 
-/* ANIMAÇÕES PERSONALIZADAS (MODIFICADAS PARA SEREM MAIS SUAVES) */
 @keyframes float {
   0% { transform: translate(0, 0) rotate(0deg); }
-  100% { transform: translate(50vw, 50vh) rotate(180deg); }
+  25% { transform: translate(20vw, 20vh) rotate(90deg); }
+  50% { transform: translate(40vw, 40vh) rotate(180deg); }
+  75% { transform: translate(60vw, 20vh) rotate(270deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
 }
 
 @keyframes heartbeat {
@@ -68,7 +69,6 @@ body {
   100% { transform: scale(1); }
 }
 
-/* EFEITOS DE TEXTO (MODIFICADOS PARA SEREM MAIS SUAVES) */
 .title-animation {
   animation: slideInFade 1s ease both, gentlePulse 6s ease infinite 1s;
 }
@@ -95,17 +95,13 @@ body {
   animation: textFocusIn 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) both;
 }
 
-.text-blur-out {
-  animation: textFocusIn 0.8s cubic-bezier(0.550, 0.085, 0.680, 0.530) reverse both;
-}
-
-/* SLIDESHOW PREMIUM (MODIFICADO PARA MOVIMENTOS MAIS SUAVES) */
 .slideshow-container {
   width: 100vw;
   height: 100vh;
   position: relative;
   overflow: hidden;
   perspective: 1000px;
+  z-index: 1;
 }
 
 .slide {
@@ -114,32 +110,16 @@ body {
   top: 0;
   width: 100%;
   height: 100%;
-  opacity: 0;
-  transition: all 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-  transform-style: preserve-3d;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   padding: 20px;
-  backface-visibility: hidden;
+  transition: opacity 0.8s ease;
 }
 
 .slide.active {
+  display: flex;
   opacity: 1;
-  transform: translateX(0) rotateY(0deg) scale(1);
-  z-index: 2;
-}
-
-.slide.prev {
-  transform: translateX(-20%) rotateY(10deg) scale(0.95);
-  opacity: 0.4;
-  z-index: 1;
-}
-
-.slide.next {
-  transform: translateX(20%) rotateY(-10deg) scale(0.95);
-  opacity: 0.4;
-  z-index: 1;
 }
 
 .slide-content {
@@ -152,21 +132,25 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow);
   text-align: center;
+  z-index: 2;
 }
 
-/* Slide especial em tela cheia */
-.fullscreen-slide.active {
-  animation: gentlePulse 10s ease infinite;
+.fullscreen-slide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  z-index: 100;
 }
 
-.fullscreen-photo {
+.fullscreen-slide .fullscreen-photo {
   width: 100%;
   height: 100%;
   background-size: cover;
   background-position: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: relative;
 }
 
@@ -181,12 +165,14 @@ body {
 }
 
 .fullscreen-message {
-  position: relative;
-  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
   text-align: center;
-  padding: 20px;
-  max-width: 80%;
-  animation: slideInFade 1s ease both;
+  z-index: 2;
 }
 
 .secret-note {
@@ -207,7 +193,6 @@ body {
   color: var(--primary);
 }
 
-/* Estilos gerais */
 h1, h2 {
   font-family: 'Dancing Script', cursive;
   color: var(--primary);
@@ -220,7 +205,6 @@ span {
   color: var(--secondary);
 }
 
-/* Foto quadrada */
 .photo-frame {
   width: 300px;
   height: 300px;
@@ -245,7 +229,6 @@ span {
   animation: heartbeat 2s ease-in-out infinite;
 }
 
-/* ELEMENTOS FLUTUANTES MELHORADOS */
 #floating-elements {
   position: fixed;
   top: 0;
@@ -260,13 +243,25 @@ span {
 .floating {
   position: absolute;
   font-size: 1.8em;
-  opacity: 0.7;
+  opacity: 0.8;
   animation: float 40s linear infinite, gentlePulse 6s ease-in-out infinite;
-  filter: drop-shadow(0 0 3px rgba(255,255,255,0.3));
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
   will-change: transform;
+  z-index: -1;
 }
 
-/* SISTEMA DE CORAÇÕES EXTRAS */
+.floating-img {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  opacity: 0.8;
+  animation: float 50s linear infinite, gentlePulse 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+  will-change: transform;
+  object-fit: contain;
+  z-index: -1;
+}
+
 #hearts-container {
   position: fixed;
   top: 0;
@@ -285,7 +280,6 @@ span {
   opacity: 0;
 }
 
-/* Botões de navegação */
 #prev-btn, #next-btn {
   position: fixed;
   top: 50%;
@@ -319,7 +313,6 @@ span {
   right: 20px;
 }
 
-/* Caixa de mensagem */
 .message-box {
   background: rgba(255, 255, 255, 0.1);
   padding: 15px;
@@ -333,7 +326,6 @@ span {
   line-height: 1.6;
 }
 
-/* Indicadores */
 .indicators {
   position: fixed;
   bottom: 20px;
@@ -358,7 +350,6 @@ span {
   transform: scale(1.1);
 }
 
-/* Controle de áudio */
 #audio-control {
   position: fixed;
   bottom: 20px;
@@ -388,7 +379,6 @@ span {
   transform: scale(1.03);
 }
 
-/* Dica de navegação */
 .nav-hint {
   margin-top: 20px;
   font-size: 0.9rem;
@@ -399,7 +389,6 @@ span {
   animation: gentlePulse 3s ease infinite;
 }
 
-/* Responsivo */
 @media (max-width: 768px) and (orientation: portrait) {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.8rem; }
@@ -422,6 +411,11 @@ span {
   .slide-content {
     padding: 20px;
   }
+  
+  .floating-img {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 @media (max-width: 480px) and (orientation: portrait) {
@@ -440,5 +434,10 @@ span {
   
   .signature {
     font-size: 1.5rem;
+  }
+  
+  .floating-img {
+    width: 40px;
+    height: 40px;
   }
 }
